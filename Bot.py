@@ -9,9 +9,10 @@ count = 0
 dataclose = open("Play.txt",'w+',encoding="utf-8")
 dataclose.close 
 start_play = False
+start_calc = False
 bot = telebot.TeleBot("5838924178:AAH7l-u8BC4AQegn8Is-kzHW7-2u_GmdJ8s", parse_mode=None)
 
-markup = types.ReplyKeyboardMarkup()
+markup = types.ReplyKeyboardMarkup(row_width=3)
 itembtn1 = types.KeyboardButton('Играть')
 itembtn2 = types.KeyboardButton('/calc')
 itembtn3 = types.KeyboardButton('/give_cat')
@@ -22,15 +23,18 @@ markup.add(itembtn1, itembtn2, itembtn3)
 def send_welcome(message):
     bot.reply_to(message, 'Привет, '+ message.from_user.first_name +'\nЧем займёмся?\nМогу посчитать тебе любую задачу,напиши /calc "твоя задача"\nМогу прислать тебе милого котика\n/give_cat\nМожем сыграть в игру, просто напиши Играть', reply_markup=markup)
 
-@bot.message_handler(commands=['calc'],content_types=["text"])
-def Calc(message):
-    print(message)
-    bot.reply_to(message, eval(message.text[6:]))
-
 @bot.message_handler(commands=['give_cat'])
 def Cat(message):
     cat = f'https://cataas.com/cat?t=${time.time()}'
     bot.send_photo(message.chat.id, cat)
+
+@bot.message_handler(content_types=["text"])
+def Calc(message):
+    print(f'{message.from_user.id} {message.from_user.first_name} {message.from_user.last_name}: {message.text}')
+    global start_calc
+    if 'Калькулятор' in message.text:
+        
+    bot.reply_to(message, eval(message.text[6:]))
 
 @bot.message_handler(content_types=['text'])
 def Play(message):
